@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+venv/
+.venv/
+data/records.json.bak
+*.bak
+.DS_Store
+node_modules/
+.omc/

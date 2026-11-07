@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人记账本</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <!-- ===== 导航栏 ===== -->
+  <nav class="navbar">
+    <h1 class="logo">💰 个人记账本</h1>
+    <div class="nav-links">
+      <a href="#" class="nav-item active" data-view="record">记账</a>
+      <a href="#" class="nav-item" data-view="list">明细</a>
+      <a href="#" class="nav-item" data-view="stats-date">时间统计</a>
+      <a href="#" class="nav-item" data-view="stats-category">分类统计</a>
+      <a href="#" class="nav-item" data-view="stats-amount">金额分析</a>
+      <a href="#" class="nav-item" data-view="io">导入导出</a>
+    </div>
+  </nav>
+
+  <!-- ===== Toast 容器 ===== -->
+  <div id="toast-container"></div>
+
+  <!-- ===== 主视图容器 ===== -->
+  <main id="view-container" class="container">
+    <!-- 各模块 render() 输出到这里 -->
+    <div class="empty-state">
+      <p>加载中...</p>
+    </div>
+  </main>
+
+  <!-- ===== 统一脚本引入 ===== -->
+  <!-- 基础（1号） -->
+  <script src="/static/js/mock.js"></script>
+  <script src="/static/js/api.js"></script>
+  <!-- 功能模块（各号按其负责的 JS 注册视图） -->
+  <script src="/static/js/record.js"></script>
+  <script src="/static/js/list.js"></script>
+  <script src="/static/js/stats-date.js"></script>
+  <script src="/static/js/stats-category.js"></script>
+  <script src="/static/js/stats-amount.js"></script>
+  <script src="/static/js/chart.js"></script>
+  <script src="/static/js/io.js"></script>
+  <!-- 主入口（1号，最后加载以调度视图） -->
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
