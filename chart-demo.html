@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>chart.js 自测页 —— 9 号图表模块</title>
+<style>
+  :root {
+    --viz-series-1: #2a78d6;
+    --viz-series-2: #eb6834;
+    --viz-series-3: #1baf7a;
+    --viz-series-4: #eda100;
+    --viz-series-5: #e87ba4;
+    --viz-series-6: #008300;
+    --viz-series-7: #6250d6;
+    --viz-series-8: #e34948;
+    --viz-income:  #008300;
+    --viz-expense: #e34948;
+    --viz-surface: #fcfcfb;
+    --viz-ink:     #0b0b0b;
+    --viz-ink-2:   #52514e;
+    --viz-muted:   #898781;
+    --viz-grid:    #e1e0d9;
+    --viz-axis:    #c3c2b7;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --viz-series-1: #3987e5;
+      --viz-series-2: #d95926;
+      --viz-series-3: #199e70;
+      --viz-series-4: #c98500;
+      --viz-series-5: #d55181;
+      --viz-series-6: #008300;
+      --viz-series-7: #9085e9;
+      --viz-series-8: #e66767;
+      --viz-income:  #0ca30c;
+      --viz-expense: #e66767;
+      --viz-surface: #1a1a19;
+      --viz-ink:     #f0efec;
+      --viz-ink-2:   #c3c2b7;
+      --viz-grid:    #2c2c2a;
+      --viz-axis:    #383835;
+    }
+    body { background: #0d0d0d; color: #f0efec; }
+  }
+  body {
+    margin: 0; padding: 24px;
+    font: 14px system-ui, -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: #f9f9f7; color: #0b0b0b;
+  }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .sub { color: #898781; margin-bottom: 20px; font-size: 13px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; max-width: 1200px; }
+  .card {
+    background: var(--viz-surface); border: 1px solid rgba(11,11,11,.10);
+    border-radius: 12px; padding: 14px 16px 10px;
+  }
+  .card h2 { font-size: 14px; margin: 0 0 2px; font-weight: 600; }
+  .card p { margin: 0 0 10px; font-size: 12px; color: #898781; }
+  .chart { height: 240px; }
+  .wide { grid-column: 1 / -1; }
+  .wide .chart { height: 260px; }
+</style>
+</head>
+<body>
+  <h1>chart.js 自测页</h1>
+  <div class="sub">9 号图表模块 · 直接双击打开即可，不需要起服务器，也不需要联网</div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>支出分类占比</h2>
+      <p>7 号接口数据：{category, amount}</p>
+      <div class="chart" id="c-pie"></div>
+    </div>
+
+    <div class="card">
+      <h2>各分类金额排行</h2>
+      <p>7 号接口数据，柱状图版</p>
+      <div class="chart" id="c-bar"></div>
+    </div>
+
+    <div class="card wide">
+      <h2>近 14 天收支走势</h2>
+      <p>6 号接口数据：{period, income, expense}，双系列</p>
+      <div class="chart" id="c-line"></div>
+    </div>
+
+    <div class="card">
+      <h2>金额分布区间</h2>
+      <p>8 号接口数据：{bucket, count}</p>
+      <div class="chart" id="c-dist"></div>
+    </div>
+
+    <div class="card">
+      <h2>空状态</h2>
+      <p>没有数据时不该是一片空白</p>
+      <div class="chart" id="c-empty"></div>
+    </div>
+  </div>
+
+<script src="static/js/chart.js"></script>
+<script>
+  // ——— 7 号：按类别统计 ———
+  Chart.pie('#c-pie', [
+    { category: '饮食', amount: 1268.5 },
+    { category: '交通', amount: 386 },
+    { category: '购物', amount: 2140 },
+    { category: '娱乐', amount: 520 },
+    { category: '学习', amount: 799 },
+    { category: '居住', amount: 2400 },
+    { category: '医疗', amount: 168 },
+    { category: '其他', amount: 233.5 }
+  ]);
+
+  Chart.bar('#c-bar', [
+    { category: '居住', amount: 2400 },
+    { category: '购物', amount: 2140 },
+    { category: '饮食', amount: 1268.5 },
+    { category: '学习', amount: 799 },
+    { category: '娱乐', amount: 520 },
+    { category: '交通', amount: 386 }
+  ]);
+
+  // ——— 6 号：按日期统计 ———
+  var days = ['10-25','10-26','10-27','10-28','10-29','10-30','10-31',
+              '11-01','11-02','11-03','11-04','11-05','11-06','11-07'];
+  var income  = [0, 0, 0, 0, 0, 0, 8000, 0, 0, 0, 0, 0, 0, 300];
+  var expense = [86, 42, 158, 0, 65, 320, 128, 78, 45, 210, 96, 33, 142, 88];
+  Chart.line('#c-line',
+    days.map(function (d, i) { return { period: d, income: income[i], expense: expense[i] }; }),
+    { series: [
+        { key: 'income',  name: '收入', color: 'var(--viz-income)' },
+        { key: 'expense', name: '支出', color: 'var(--viz-expense)' }
+      ] }
+  );
+
+  // ——— 8 号：金额分布 ———
+  Chart.bar('#c-dist', [
+    { bucket: '0-50', count: 12 },
+    { bucket: '50-100', count: 9 },
+    { bucket: '100-300', count: 8 },
+    { bucket: '300-500', count: 3 },
+    { bucket: '500-1000', count: 2 },
+    { bucket: '1000+', count: 1 }
+  ]);
+
+  // ——— 空状态 ———
+  Chart.pie('#c-empty', []);
+</script>
+</body>
+</html>
