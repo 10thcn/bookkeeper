@@ -293,7 +293,18 @@
     return el || null;
   }
 
+  // app.js 切视图是 container.innerHTML 整块替换，旧容器连同画布一起被摘掉，
+  // 但 ResizeObserver 还挂在那个已经不在文档里的节点上。每次建新图时顺手扫一遍，
+  // 免得来回切视图越积越多。6/7/8 号就算忘了 destroy 也不会漏。
+  function sweep() {
+    for (var i = registry.length - 1; i >= 0; i--) {
+      var el = registry[i].el;
+      if (el.isConnected === false) registry[i].inst.destroy();
+    }
+  }
+
   function build(type, elArg, data, opts) {
+    sweep();
     var el = resolve(elArg);
     if (!el) { console.warn('[chart] 找不到容器：', elArg); return null; }
     var old = findInst(el);
